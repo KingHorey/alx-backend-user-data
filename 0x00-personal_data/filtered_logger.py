@@ -8,9 +8,8 @@ from typing import List
 def filter_datum(fields: List, redaction: str, message: str,
                  separator: str) -> str:
     """ returns obfuscated log message based on fields"""
-    for x in message.split(separator):
-        for y in fields:
-            if y in x:
-                message = re.sub(f'{y}=.*?;', f'{y}={redaction};',
-                                 message)
+    for y in fields:
+        if y in message:
+            message = re.sub(f'{y}=.*?{separator}', f'{y}={redaction}'
+                                                    f'{separator}', message)
     return message
