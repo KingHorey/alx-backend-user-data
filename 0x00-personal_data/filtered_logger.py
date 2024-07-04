@@ -28,9 +28,9 @@ def filter_datum(fields: List[str], redaction: str, message: str,
 def get_db() -> mysql.connector.connection.MySQLConnection:
     """ connect to db """
     conn = mysql.connector.connect(
-        host=db_host,
+        host= (db_host, 'localhost'),  # 'localhost
         database=db_name,
-        user=db_username,
+        user=(db_username, 'root'),  # 'root'
         password=db_password
     )
 
@@ -84,3 +84,7 @@ class RedactingFormatter(logging.Formatter):
         record.msg = filter_datum(self.fields, self.REDACTION,
                                   record.getMessage(), self.SEPARATOR)
         return logging.Formatter(fmt=self.FORMAT).format(record)
+
+
+if __name__ == "__main__":
+    main()
