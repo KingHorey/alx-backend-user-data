@@ -4,7 +4,7 @@ import re
 from typing import List
 import logging
 from os import getenv
-import mysql.connector
+from mysql import connector as mysql
 
 
 PII_FIELDS = ("name", "email", "phone", "ssn", "password")
@@ -19,19 +19,18 @@ def filter_datum(fields: List[str], redaction: str, message: str,
     return message
 
 
-def get_db() -> mysql.connector.connection.MySQLConnection:
-    """ connect to db """
+def get_db() -> mysql.MySQLConnection:
+    """ connect to db to get user data """
     db_username = getenv("PERSONAL_DATA_DB_USERNAME", "root")
     db_password = getenv("PERSONAL_DATA_DB_PASSWORD")
     db_host = getenv("PERSONAL_DATA_DB_HOST", 'localhost')
     db_name = getenv("PERSONAL_DATA_DB_NAME")
-    conn = mysql.connector.connect(
+    conn = mysql.connect(
         host=db_host,
         database=db_name,
         user=db_username,
         password=db_password
     )
-
     return conn
 
 
