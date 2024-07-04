@@ -4,6 +4,8 @@ import re
 from typing import List
 import logging
 
+PII_FIELDS = ("name", "email", "phone", "ssn", "ip")
+
 
 def filter_datum(fields: List[str], redaction: str, message: str,
                  separator: str) -> str:
@@ -12,6 +14,22 @@ def filter_datum(fields: List[str], redaction: str, message: str,
         message = re.sub(f'{y}=.*?{separator}', f'{y}={redaction}{separator}',
                          message)
     return message
+
+
+def get_logger() -> logging.Logger:
+    """ returns logger object"""
+    logger = logging.getLogger("user_data")  # create logger with name
+    # user_data
+    logger.setLevel(logging.INFO)  # set log level
+    logger.propagate = False  # prevent log messages from
+    # propagating to parent logger
+    streamHandler = logging.StreamHandler()  # set stream handler
+    # to handle logs from logger
+    streamHandler.setFormatter(RedactingFormatter(PII_FIELDS))  # set
+    # formatter to handle logs formatting style
+    logger.addHandler(streamHandler)  # to mange how logs are handled -
+    # streamHandler for stdout,err etc, fileHandler for file
+    return logger
 
 
 class RedactingFormatter(logging.Formatter):
