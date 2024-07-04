@@ -22,10 +22,14 @@ def filter_datum(fields: List[str], redaction: str, message: str,
 
 def get_db() -> MySQLConnection:
     """ connect to db to get user data """
-    db_username = getenv("PERSONAL_DATA_DB_USERNAME", "root")
-    db_password = getenv("PERSONAL_DATA_DB_PASSWORD", '')
-    db_host = getenv("PERSONAL_DATA_DB_HOST", 'localhost')
-    db_name = getenv("PERSONAL_DATA_DB_NAME", '')
+    db_username = getenv("PERSONAL_DATA_DB_USERNAME") if getenv(
+        "PERSONAL_DATA_DB_USERNAME") else "root"
+    db_password = getenv("PERSONAL_DATA_DB_PASSWORD") if getenv(
+        "PERSONAL_DATA_DB_PASSWORD") else ""
+    db_host = getenv("PERSONAL_DATA_DB_HOST") if getenv(
+        "PERSONAL_DATA_DB_HOST") else "localhost"
+    db_name = getenv("PERSONAL_DATA_DB_NAME") if getenv(
+        "PERSONAL_DATA_DB_NAME") else ""
     conn = mysql.connect(
         host=db_host,
         database=db_name,
@@ -83,7 +87,3 @@ class RedactingFormatter(logging.Formatter):
         record.msg = filter_datum(self.fields, self.REDACTION,
                                   record.getMessage(), self.SEPARATOR)
         return logging.Formatter(fmt=self.FORMAT).format(record)
-
-
-if __name__ == "__main__":
-    main()
