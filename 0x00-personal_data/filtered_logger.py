@@ -22,7 +22,7 @@ def filter_datum(fields: List[str], redaction: str, message: str,
 def get_db() -> mysql.MySQLConnection:
     """ connect to db to get user data """
     db_username = getenv("PERSONAL_DATA_DB_USERNAME", "root")
-    db_password = getenv("PERSONAL_DATA_DB_PASSWORD")
+    db_password = getenv("PERSONAL_DATA_DB_PASSWORD", '')
     db_host = getenv("PERSONAL_DATA_DB_HOST", 'localhost')
     db_name = getenv("PERSONAL_DATA_DB_NAME")
     conn = mysql.connect(
