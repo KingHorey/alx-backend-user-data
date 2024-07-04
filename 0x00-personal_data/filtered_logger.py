@@ -7,12 +7,6 @@ from os import getenv
 import mysql.connector
 
 
-db_username = getenv("PERSONAL_DATA_DB_USERNAME")
-db_password = getenv("PERSONAL_DATA_DB_PASSWORD")
-db_host = getenv("PERSONAL_DATA_DB_HOST")
-db_name = getenv("PERSONAL_DATA_DB_NAME")
-
-
 PII_FIELDS = ("name", "email", "phone", "ssn", "password")
 
 
@@ -27,8 +21,12 @@ def filter_datum(fields: List[str], redaction: str, message: str,
 
 def get_db() -> mysql.connector.connection.MySQLConnection:
     """ connect to db """
+    db_username = getenv("PERSONAL_DATA_DB_USERNAME")
+    db_password = getenv("PERSONAL_DATA_DB_PASSWORD")
+    db_host = getenv("PERSONAL_DATA_DB_HOST")
+    db_name = getenv("PERSONAL_DATA_DB_NAME")
     conn = mysql.connector.connect(
-        host= (db_host, 'localhost'),  # 'localhost
+        host=(db_host, 'localhost'),  # 'localhost
         database=db_name,
         user=(db_username, 'root'),  # 'root'
         password=db_password
