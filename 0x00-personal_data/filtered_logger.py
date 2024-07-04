@@ -3,6 +3,14 @@
 import re
 from typing import List
 import logging
+from os import getenv
+import mysql.connector
+
+
+db_username = getenv("PERSONAL_DATA_DB_USERNAME")
+db_password = getenv("PERSONAL_DATA_DB_PASSWORD")
+db_host = getenv("PERSONAL_DATA_DB_HOST")
+db_name = getenv("PERSONAL_DATA_DB_NAME")
 
 
 PII_FIELDS = ("name", "email", "phone", "ssn", "password")
@@ -15,6 +23,33 @@ def filter_datum(fields: List[str], redaction: str, message: str,
         message = re.sub(f'{y}=.*?{separator}', f'{y}={redaction}{separator}',
                          message)
     return message
+
+
+def get_db() -> mysql.connector.connection.MySQLConnection:
+    """ connect to db """
+    conn = mysql.connector.connect(
+        host=db_host,
+        database=db_name,
+        user=db_username,
+        password=db_password
+    )
+
+    return conn
+
+
+def main() -> None:
+    """ get info from db """
+    conn = get_db()
+    cursor = conn.cursor()  # create cursor for cmd execution
+    cursor.execute("SELECT * FROM users")
+    logger = get_logger()
+    result = cursor.fetchall()
+    for row in result:
+        result = ";".join(str(x) for x in row)
+        logger.info(result)
+
+    cursor.close()
+    conn.close()
 
 
 def get_logger() -> logging.Logger:
